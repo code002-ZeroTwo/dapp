@@ -33,6 +33,7 @@ contract Dappazon {
     owner = msg.sender;
   }
 
+  event Buy(address buyer, uint256 orderId, uint256 itemId);
   event List(string name, uint256 cost,uint256 quantity);
 
   // list products 
@@ -45,7 +46,6 @@ contract Dappazon {
         uint256 _rating,
         uint256 _stock
   )public onlyOwner{
-    require(msg.sender == owner);
     // code goes here... 
     
     // create Item struct
@@ -64,8 +64,12 @@ contract Dappazon {
   function buy(uint256 _id) public payable{
     // Receive crypto
 
+
     // Fetch iitem
     Item memory item = items[_id];
+
+    // stock should be greater than 0 
+    require(item.stock > 0);
 
     // Create an order
     Order memory order = Order(block.timestamp , item);
@@ -80,11 +84,17 @@ contract Dappazon {
     items[_id].stock = item.stock -1;
 
     // Emit event
+    emit Buy(msg.sender,orderCount[msg.sender], item.id);
 
   }
 
 
   // withdraw  funds 
+  function withdraw() public onlyOwner {
+    (bool success, ) = owner.call{value:address(this).balance}(""); 
+    require(success);
+  }
+
 }
 
 
