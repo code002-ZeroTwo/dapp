@@ -21,8 +21,12 @@ function App() {
   const [electronics, setelectronics] = useState(null);
   const [clothing, setclothing] = useState(null);
   const [toys, settoys] = useState(null);
+  const [item,setitem] = useState({});
+  const [toggle,settoggle] = useState(false);
   
-  const togglePop = async () => {
+  const togglePop = async (item) => {
+    setitem(item)
+    toggle ? settoggle(false) : settoggle(true);
 
   }
   
@@ -79,6 +83,10 @@ function App() {
         <Section title={"Electronics & Gadgets"} items={electronics} togglePop={togglePop} />
         <Section title={"Toys and Gaming"} items={toys} togglePop={togglePop} />
         </>
+      )}
+
+      {toggle && (
+        <Product item= {item} provider = {provider} account={account} dappazon={dappazon} togglePop={togglePop} />
       )}
     </div>
   );
